@@ -288,14 +288,21 @@ export class SwaggerDefinitionComponent implements OnDestroy {
                     configChange = true;
                 }
 
-                if (!config.properties.cors.allowedOrigins.includes(Constants.portalHostName)) {
-                    config.properties.cors.allowedOrigins.push(Constants.portalHostName)
-                    configChange = true;
-                }
+                if (!config.properties.cors.allowedOrigins.includes("*")) {
+                    if (!config.properties.cors.allowedOrigins.includes(Constants.portalHostName)) {
+                        config.properties.cors.allowedOrigins.push(Constants.portalHostName)
+                        configChange = true;
+                    }
 
-                if (!config.properties.cors.allowedOrigins.includes(Constants.webAppsHostName)) {
-                    config.properties.cors.allowedOrigins.push(Constants.webAppsHostName)
-                    configChange = true;
+                    if (!config.properties.cors.allowedOrigins.includes(Constants.webAppsHostName)) {
+                        config.properties.cors.allowedOrigins.push(Constants.webAppsHostName)
+                        configChange = true;
+                    }
+
+                    if (!config.properties.cors.allowedOrigins.includes(Constants.msPortalHostName)) {
+                        config.properties.cors.allowedOrigins.push(Constants.msPortalHostName)
+                        configChange = true;
+                    }
                 }
 
                 if (configChange) {
