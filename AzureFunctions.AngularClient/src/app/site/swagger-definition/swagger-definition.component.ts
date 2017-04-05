@@ -179,7 +179,7 @@ export class SwaggerDefinitionComponent implements OnDestroy {
         }
 
         if (!this.swaggerDocument) {
-            this.swaggerDocument = {};
+            this.swaggerDocument = this._translateService.instant(PortalResources.swaggerDefinition_placeHolder);
         }
 
         this.swaggerEditor.setDocument(this.swaggerDocument);
@@ -349,7 +349,7 @@ export class SwaggerDefinitionComponent implements OnDestroy {
             }).flatMap(key => {
                 if (!key) {
                     // will be passed to swagger doc
-                    return Observable.of({});
+                    return Observable.of(this._translateService.instant(PortalResources.swaggerDefinition_placeHolder));
                 }
                 this.swaggerKey = key;
                 this.swaggerURL = this.getUpdatedSwaggerURL(key);
@@ -358,7 +358,7 @@ export class SwaggerDefinitionComponent implements OnDestroy {
             .retry(1)
             .catch(error => {
                 // get document fails                
-                return Observable.of({});
+                return Observable.of(this._translateService.instant(PortalResources.swaggerDefinition_placeHolder));
             }).flatMap(swaggerDoc => {
                 this.swaggerDocument = swaggerDoc;
                 this.assignDocumentToEditor(swaggerDoc);

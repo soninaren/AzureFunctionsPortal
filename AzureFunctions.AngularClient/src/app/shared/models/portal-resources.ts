@@ -494,5 +494,6 @@ export class PortalResources
     public static error_unableToUpdateRuntimeConfig: string = "error_unableToUpdateRuntimeConfig";
     public static error_unableToUpdateSwaggerData: string = "error_unableToUpdateSwaggerData";
     public static swaggerDefinition_revert: string = "swaggerDefinition_revert";
+    public static swaggerDefinition_placeHolder: string = "swaggerDefinition_placeHolder";
 }
 

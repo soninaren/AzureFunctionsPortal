@@ -1594,4 +1594,7 @@
   <data name="swaggerDefinition_revert" xml:space="preserve">
     <value>Revert to last save</value>
   </data>
+  <data name="swaggerDefinition_placeHolder" xml:space="preserve">
+    <value>#Click "Load Generated API Definition" to get started</value>
+  </data>
 </root>
