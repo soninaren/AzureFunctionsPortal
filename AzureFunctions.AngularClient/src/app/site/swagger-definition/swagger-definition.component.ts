@@ -191,11 +191,18 @@ export class SwaggerDefinitionComponent implements OnDestroy {
         }
     }
     public LoadGeneratedDataInEditor() {
-        this.functionApp.getGeneratedSwaggerData(this.swaggerKey)
-            .subscribe((swaggerDoc: any) => {
-                this.swaggerDocument = swaggerDoc;
-                this.assignDocumentToEditor(swaggerDoc);
-            });
+        this.swaggerEditor.getDocument((swaggerDocument, error) => {
+            if ((!swaggerDocument
+                || swaggerDocument == this._translateService.instant(PortalResources.swaggerDefinition_placeHolder)
+                || !error)
+                && confirm("Are you sure you want to overwrite the API definition in the editor?")) {
+                this.functionApp.getGeneratedSwaggerData(this.swaggerKey)
+                    .subscribe((swaggerDoc: any) => {
+                        this.swaggerDocument = swaggerDoc;
+                        this.assignDocumentToEditor(swaggerDoc);
+                    });
+            }
+        });
     }
 
     public toggleKeyVisibility(): void {
@@ -235,6 +242,7 @@ export class SwaggerDefinitionComponent implements OnDestroy {
                 if (confirmDelete) {
                     this.functionApp.deleteSwaggerDocument(this.swaggerURL).
                         subscribe(() => {
+                            this.swaggerDocument = this._translateService.instant(PortalResources.swaggerDefinition_placeHolder);
                             this._globalStateService.clearBusyState();
                         }, e => {
                             this._globalStateService.clearBusyState();
