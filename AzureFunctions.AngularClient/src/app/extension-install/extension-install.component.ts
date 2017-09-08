@@ -65,8 +65,20 @@ export class ExtensionInstallComponent {
                 this.jobLocations.forEach(job => {
                     status.push(this.functionApp.getExtensionInstallStatus(job.id));
                 });
+                Observable.zip(...status).subscribe(r => {
+                    let job: any[] = [];
+                    r.forEach(jobStatus => {
+                        if (jobStatus.status !== 'succeeded') {
+                            job.push(jobStatus);
+                        }
+                    });
+                    this.jobLocations = job;
+                    if (this.jobLocations.length > 0) {
+                        this.pollInstallationStatus();
+                    }
+                });
             }
-        }, 0);
+        }, 500);
     }
 
     GetRequiredExtensions(templateExtensions: RuntimeExtension[]) {
