@@ -1,4 +1,4 @@
-﻿import { Component, ElementRef, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/retry';
@@ -26,6 +26,8 @@ import { DashboardType } from '../tree-view/models/dashboard-type';
 import { Constants } from '../shared/models/constants';
 import { CacheService } from './../shared/services/cache.service';
 import { MicrosoftGraphHelper } from '../pickers/microsoft-graph/microsoft-graph-helper';
+import { ExtensionInstallComponent } from './../extension-install/extension-install.component';
+import { RuntimeExtension } from '../shared/models/binding';
 
 @Component({
     selector: 'function-new',
@@ -35,12 +37,10 @@ import { MicrosoftGraphHelper } from '../pickers/microsoft-graph/microsoft-graph
     inputs: ['viewInfoInput']
 })
 export class FunctionNewComponent {
-
+    @ViewChild(ExtensionInstallComponent) extensionInstallComponent: ExtensionInstallComponent;
     private functionsNode: FunctionsNode;
-
     public functionApp: FunctionApp;
     public functionsInfo: FunctionInfo[];
-
     elementRef: ElementRef;
     type: TemplatePickerType = TemplatePickerType.template;
     functionName: string;
@@ -54,11 +54,13 @@ export class FunctionNewComponent {
     selectedTemplate: FunctionTemplate;
     selectedTemplateId: string;
     templateWarning: string;
+    requiredExtensions: RuntimeExtension[] = [];
     addLinkToAuth = false;
     showAADExpressRegistration = false;
     action: Action;
     public disabled: boolean;
     private _bindingComponents: BindingComponent[] = [];
+    public viewInfo: TreeViewInfo<any>;
     private _exclutionFileList = [
         'test.json',
         'readme.md',
@@ -81,6 +83,7 @@ export class FunctionNewComponent {
 
         this._viewInfoStream
             .switchMap(viewInfo => {
+                this.viewInfo = viewInfo;
                 this._globalStateService.setBusyState();
                 this.functionsNode = <FunctionsNode>viewInfo.node;
                 this.appNode = <AppNode>viewInfo.node.parent;
@@ -116,14 +119,25 @@ export class FunctionNewComponent {
         this.functionApp.getTemplates().subscribe((templates) => {
             setTimeout(() => {
                 this.selectedTemplate = templates.find((t) => t.id === templateName);
-
                 if (this.selectedTemplate && this.selectedTemplate.metadata) {
                     this.showAADExpressRegistration = !!this.selectedTemplate.metadata.AADPermissions;
                 }
-              
+
+
                 const experimentalCategory = this.selectedTemplate.metadata.category.find((c) => {
                     return c === 'Experimental';
                 });
+
+                if (this.selectedTemplate.metadata.extensions && this.selectedTemplate.metadata.extensions.length > 0) {
+                    this.extensionInstallComponent.setBusyState();
+                    this.extensionInstallComponent.GetRequiredExtensions(this.selectedTemplate.metadata.extensions)
+                        .subscribe(extensions => {
+                            this.extensionInstallComponent.clearBusyState();
+                            this.requiredExtensions = extensions;
+                        });
+                } else {
+                    this.requiredExtensions = [];
+                }
 
                 this.templateWarning = experimentalCategory === undefined ? '' : this._translateService.instant(PortalResources.functionNew_experimentalTemplate);
                 if (this.selectedTemplate.metadata.warning) {
@@ -268,7 +282,7 @@ export class FunctionNewComponent {
         this._portalService.getStartupInfo().subscribe(info => {
             let helper = new MicrosoftGraphHelper(this.functionApp, this._cacheService, this._aiService);
             helper.createAADApplication(this.selectedTemplate.metadata, info.graphToken, this._globalStateService)
-                .subscribe(r => { 
+                .subscribe(r => {
                     this._globalStateService.clearBusyState();
                 },
                 err => {
