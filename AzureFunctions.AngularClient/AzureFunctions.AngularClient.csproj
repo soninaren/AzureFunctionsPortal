@@ -413,7 +413,6 @@
     <TypeScriptCompile Include="src\app\edit-mode-warning\edit-mode-warning.component.ts" />
     <TypeScriptCompile Include="src\app\error-list\error-list.component.spec.ts" />
     <TypeScriptCompile Include="src\app\error-list\error-list.component.ts" />
-    <TypeScriptCompile Include="src\app\extension-install\extension-install.component.spec.ts" />
     <TypeScriptCompile Include="src\app\extension-install\extension-install.component.ts" />
     <TypeScriptCompile Include="src\app\feature-group\feature-group.component.spec.ts" />
     <TypeScriptCompile Include="src\app\feature-group\feature-group.component.ts" />

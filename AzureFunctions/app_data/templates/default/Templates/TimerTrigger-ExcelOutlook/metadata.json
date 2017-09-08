@@ -4,12 +4,20 @@
   "name": "Read, update Excel table & send O365 emails",
   "language": "C#",
   "enabledInTryMode": true,
-  "category": [ "$temp_category_msgraph" ],
-  "filters": [ "MSGraph" ],
+  "category": [
+    "$temp_category_msgraph"
+  ],
+  "filters": [
+    "MSGraph"
+  ],
   "extensions": [
     {
-      "id": "Azure.Functions.Templates",
-      "version": "1.0.1-beta6-10048"
+      "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+      "version": "1.0.0"
     }
   ],
   "AADPermissions": [

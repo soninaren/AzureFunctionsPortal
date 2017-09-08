@@ -25,6 +25,7 @@ export class ExtensionInstallComponent {
     private functionsNode: FunctionsNode;
     private _viewInfoStream = new Subject<TreeViewInfo<any>>();
     public functionsInfo: FunctionInfo[];
+    public jobLocations: any[] = [];
 
     constructor(private _aiService: AiService) {
         this._viewInfoStream
@@ -39,6 +40,33 @@ export class ExtensionInstallComponent {
             })
             .retry()
             .subscribe();
+    }
+
+    installRequiredExtensions() {
+        this.setBusyState();
+        if (this.requiredExtensions.length > 0) {
+            const extensionCalls: Observable<any>[] = [];
+            this.requiredExtensions.forEach(extension => {
+                extensionCalls.push(this.functionApp.installExtension(extension));
+            });
+
+            // Check install status
+            Observable.zip(...extensionCalls).subscribe((r) => {
+                this.jobLocations = r;
+                this.clearBusyState();
+            });
+        }
+    }
+
+    pollInstallationStatus() {
+        setTimeout(() => {
+            if (this.jobLocations.length > 0) {
+                const status: Observable<any>[] = [];
+                this.jobLocations.forEach(job => {
+                    status.push(this.functionApp.getExtensionInstallStatus(job.id));
+                });
+            }
+        }, 0);
     }
 
     GetRequiredExtensions(templateExtensions: RuntimeExtension[]) {

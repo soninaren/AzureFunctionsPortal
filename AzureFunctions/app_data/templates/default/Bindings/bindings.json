@@ -1758,8 +1758,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "AADPermissions": [
         {
@@ -1828,8 +1828,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "AADPermissions": [
         {
@@ -1945,8 +1945,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "documentation": "$content=Documentation\\ExcelOut.md",
       "AADPermissions": [
@@ -2080,8 +2080,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "documentation": "$content=Documentation\\Outlook.md",
       "AADPermissions": [
@@ -2169,8 +2169,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "documentation": "$content=Documentation\\OneDriveIn.md",
       "AADPermissions": [
@@ -2270,8 +2270,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "documentation": "$content=Documentation\\OneDriveOut.md",
       "AADPermissions": [
@@ -2371,8 +2371,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "documentation": "$content-Documentation\\GraphWebhook.md",
       "AADPermissions": [
@@ -2459,8 +2459,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "documentation": "$content=Documentation\\GraphWebhookCreator.md",
       "AADPermissions": [
@@ -2627,8 +2627,8 @@
         "MSGraph"
       ],
       "extension": {
-        "id": "Azure.Functions.Templates",
-        "version": "1.0.1-beta6-10048"
+        "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+        "version": "1.0.0"
       },
       "enabledInTryMode": false,
       "AADPermissions": [

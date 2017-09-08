@@ -93,7 +93,6 @@ export class FunctionRuntimeComponent implements OnDestroy {
   ) {
 
     this._busyState = siteTabsComponent.busyState;
-
     this.showTryView = this._globalStateService.showTryView;
     this._viewInfoSub = this._viewInfoStream
       .switchMap(viewInfo => {

@@ -9,8 +9,8 @@
   "filters": [ "MSGraph" ],
   "extensions": [
     {
-      "id": "Azure.Functions.Templates",
-      "version": "1.0.1-beta6-10048"
+      "id": "Microsoft.Azure.WebJobs.Samples.Extension",
+      "version": "1.0.0"
     }
   ],
   "AADPermissions": [
