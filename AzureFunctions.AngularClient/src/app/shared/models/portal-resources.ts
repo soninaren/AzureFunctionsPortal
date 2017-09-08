@@ -697,5 +697,9 @@ export class PortalResources
     public static topBar_runtimeV2: string = "topBar_runtimeV2";
     public static functionKeys_clickToHide: string = "functionKeys_clickToHide";
     public static expandCollapse: string = "expandCollapse";
+    public static failedToGetFunctionRuntimeExtensions: string = "failedToGetFunctionRuntimeExtensions";
+    public static failedToInstallFunctionRuntimeExtension: string = "failedToInstallFunctionRuntimeExtension";
+    public static failedToUnInstallFunctionRuntimeExtension: string = "failedToUnInstallFunctionRuntimeExtension";
+    public static timeoutInstallingFunctionRuntimeExtension: string = "timeoutInstallingFunctionRuntimeExtension";
 }
 

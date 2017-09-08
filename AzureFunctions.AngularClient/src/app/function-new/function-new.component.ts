@@ -1,4 +1,4 @@
-﻿import { Component, ElementRef, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/retry';
@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BindingComponent } from '../binding/binding.component';
 import { TemplatePickerType } from '../shared/models/template-picker';
 import { UIFunctionBinding } from '../shared/models/binding';
+import { RuntimeExtension } from '../shared/models/binding';
 import { BindingList } from '../shared/models/binding-list';
 import { Action } from '../shared/models/binding';
 import { FunctionInfo } from '../shared/models/function-info';
@@ -26,6 +27,7 @@ import { DashboardType } from '../tree-view/models/dashboard-type';
 import { Constants } from '../shared/models/constants';
 import { CacheService } from './../shared/services/cache.service';
 import { MicrosoftGraphHelper } from '../pickers/microsoft-graph/microsoft-graph-helper';
+import { BusyStateComponent } from './../busy-state/busy-state.component';
 
 @Component({
     selector: 'function-new',
@@ -35,12 +37,12 @@ import { MicrosoftGraphHelper } from '../pickers/microsoft-graph/microsoft-graph
     inputs: ['viewInfoInput']
 })
 export class FunctionNewComponent {
-
+    @ViewChild(BusyStateComponent) busyState: BusyStateComponent;
     private functionsNode: FunctionsNode;
 
     public functionApp: FunctionApp;
     public functionsInfo: FunctionInfo[];
-
+    packages: RuntimeExtension[];
     elementRef: ElementRef;
     type: TemplatePickerType = TemplatePickerType.template;
     functionName: string;
@@ -54,16 +56,32 @@ export class FunctionNewComponent {
     selectedTemplate: FunctionTemplate;
     selectedTemplateId: string;
     templateWarning: string;
+    requiredExtensions: RuntimeExtension[] = [];
     addLinkToAuth = false;
     showAADExpressRegistration = false;
     action: Action;
+    jobid: string;
+    installationSucceeded: boolean;
     public disabled: boolean;
     private _bindingComponents: BindingComponent[] = [];
+    public viewInfo: TreeViewInfo<any>;
     private _exclutionFileList = [
         'test.json',
         'readme.md',
         'metadata.json'
     ];
+
+    setBusyState() {
+        if (this.busyState) {
+            this.busyState.setBusyState();
+        }
+    }
+
+    clearBusyState() {
+        if (this.busyState) {
+            this.busyState.clearBusyState();
+        }
+    }
 
     private _viewInfoStream = new Subject<TreeViewInfo<any>>();
     public appNode: AppNode;
@@ -81,6 +99,7 @@ export class FunctionNewComponent {
 
         this._viewInfoStream
             .switchMap(viewInfo => {
+                this.viewInfo = viewInfo;
                 this._globalStateService.setBusyState();
                 this.functionsNode = <FunctionsNode>viewInfo.node;
                 this.appNode = <AppNode>viewInfo.node.parent;
@@ -116,11 +135,23 @@ export class FunctionNewComponent {
         this.functionApp.getTemplates().subscribe((templates) => {
             setTimeout(() => {
                 this.selectedTemplate = templates.find((t) => t.id === templateName);
-
+                this.installationSucceeded = false;
                 if (this.selectedTemplate && this.selectedTemplate.metadata) {
                     this.showAADExpressRegistration = !!this.selectedTemplate.metadata.AADPermissions;
                 }
-              
+
+                // // also check if it is already installed
+                // if (this.selectedTemplate.metadata.extensions && this.selectedTemplate.metadata.extensions.length > 0) {
+                //     this.setBusyState();
+                //     this.GetRequiredExtensions(this.selectedTemplate.metadata.extensions)
+                //         .subscribe(extensions => {
+                //             this.clearBusyState();
+                //             this.requiredExtensions = extensions;
+                //         });
+                // }
+
+                this.packages = this.selectedTemplate.metadata.extensions;
+
                 const experimentalCategory = this.selectedTemplate.metadata.category.find((c) => {
                     return c === 'Experimental';
                 });
@@ -236,6 +267,84 @@ export class FunctionNewComponent {
         );
     }
 
+    // call for extension installation
+    // get the job id once the call is successful.
+    installExtensionPackage() {
+        // this._globalStateService.setBusyState();
+        // return this.functionApp.getHostJson()
+        //     .subscribe(jsonObj => {
+        //         this.jobid = jsonObj.swagger.enabled;
+        //         if (this.jobid) {
+        //             this.pollForExtensionStatus();
+        //         }
+        //     });
+        return this.functionApp.getSystemKey()
+            .map(keys => {
+                keys.keys.forEach(key => {
+                    if (key.name === Constants.swaggerSecretName) {
+                        this.jobid = key.value;
+                        this.pollForExtensionStatus();
+                    }
+                });
+            });
+    }
+
+    GetRequiredExtensions(templateExtensions: RuntimeExtension[]) {
+        const extensions: RuntimeExtension[] = [];
+        return this.functionApp.getHostExtensions().map(r => {
+            // no extensions installed, all template extensions are required
+            if (!r.extensions) {
+                return templateExtensions;
+            }
+
+            templateExtensions.forEach(requiredExtension => {
+                let isInstalled = false;
+                r.extensions.forEach(installedExtension => {
+                    isInstalled = isInstalled
+                        || (requiredExtension.id === installedExtension.id
+                            && requiredExtension.version === installedExtension.version);
+                });
+
+                if (!isInstalled) {
+                    extensions.push(requiredExtension);
+                }
+            });
+
+            return extensions;
+        });
+    }
+
+
+    // poll on this for a minute. ignore 500 since the site could be restarting
+    pollForExtensionStatus() {
+        return this.functionApp.getSystemKey()
+            .map(keys => {
+                keys.keys.forEach(key => {
+                    if (key.name === Constants.swaggerSecretName) {
+                        this.jobid = key.value;
+                        this.pollForExtensionStatus();
+                    }
+                });
+            });
+
+        // return this.functionApp.getHostJson()
+        //     .subscribe(jsonObj => {
+        //         this.jobid = jsonObj.swagger.enabled;
+        //         if (this.jobid) {
+        //             setTimeout(() => {
+        //                 this.pollForExtensionStatus();
+        //             }, 10000);
+        //         } else {
+        //             this.installationSucceeded = true;
+        //             this.extensionRequired = false;
+        //             setTimeout(() => {
+        //                 this.installationSucceeded = false;
+        //             }, 10000);
+        //             this._globalStateService.clearBusyState();
+        //         }
+        //     });
+    }
+
     validate() {
         // ^[a-z][a-z0-9_\-]{0,127}$(?<!^host$) C# expression
         // Lookbehind is not supported in JS
@@ -268,7 +377,7 @@ export class FunctionNewComponent {
         this._portalService.getStartupInfo().subscribe(info => {
             let helper = new MicrosoftGraphHelper(this.functionApp, this._cacheService, this._aiService);
             helper.createAADApplication(this.selectedTemplate.metadata, info.graphToken, this._globalStateService)
-                .subscribe(r => { 
+                .subscribe(r => {
                     this._globalStateService.clearBusyState();
                 },
                 err => {

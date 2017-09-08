@@ -1806,6 +1806,33 @@ export class FunctionApp {
             });
     }
 
+    getHostExtensions(): Observable<any> {
+        const masterKey = this.masterKey
+            ? Observable.of(null)
+            : this.getHostSecretsFromScm();
+        return masterKey
+            .mergeMap(_ => {
+                const headers = this.getMainSiteHeaders();
+                return this._http.get(`${this.mainSiteUrl}/admin/host/extensions`, { headers: headers })
+                    .map(r => <FunctionKeys>r.json())
+                    .do(__ => this._broadcastService.broadcast<string>(BroadcastEvent.ClearError, ErrorIds.failedToGetFunctionRuntimeExtensions),
+                    (error: FunctionsResponse) => {
+                        if (!error.isHandled) {
+                            this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
+                                message: this._translateService.instant(PortalResources.failedToGetFunctionRuntimeExtensions),
+                                errorId: ErrorIds.failedToGetFunctionRuntimeExtensions,
+                                errorType: ErrorType.RuntimeError,
+                                resourceId: this.site.id
+                            });
+                            this.trackEvent(ErrorIds.failedToGetFunctionRuntimeExtensions, {
+                                status: error.status.toString(),
+                                content: error.text(),
+                            });
+                        }
+                    });
+            });
+    }
+
     getSystemKey(): Observable<FunctionKeys> {
         const masterKey = this.masterKey
             ? Observable.of(null) // you have to pass something to Observable.of() otherwise it doesn't trigger subscribers.

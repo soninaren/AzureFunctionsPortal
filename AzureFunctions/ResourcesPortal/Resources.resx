@@ -2206,4 +2206,16 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="expandCollapse" xml:space="preserve">
     <value>Expand or Collapse</value>
   </data>
+  <data name="failedToGetFunctionRuntimeExtensions" xml:space="preserve">
+    <value>We are not able to get the list of installed runtime extensions</value>
+  </data>
+  <data name="failedToInstallFunctionRuntimeExtension" xml:space="preserve">
+    <value>We are not able to install runtime extension {{extensionId}}</value>
+  </data>
+  <data name="failedToUnInstallFunctionRuntimeExtension" xml:space="preserve">
+    <value>We are not able to uninstall runtime extension {{extensionId}}</value>
+  </data>
+  <data name="timeoutInstallingFunctionRuntimeExtension" xml:space="preserve">
+    <value>Installing runtime extensions is taking longer than expected</value>
+  </data>
 </root>

@@ -48,6 +48,7 @@ import { TryNowComponent } from './try-now/try-now.component';
 import { FunctionEditComponent } from './function-edit/function-edit.component';
 import { TrialExpiredComponent } from './trial-expired/trial-expired.component';
 import { FunctionNewComponent } from './function-new/function-new.component';
+import { ExtensionInstallComponent } from './extension-install/extension-install.component';
 import { FunctionQuickstartComponent } from './function-quickstart/function-quickstart.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { SourceControlComponent } from './source-control/source-control.component';
@@ -163,6 +164,7 @@ export class AppModule {
       FunctionEditComponent,
       TrialExpiredComponent,
       FunctionNewComponent,
+      ExtensionInstallComponent,
       FunctionQuickstartComponent,
       TutorialComponent,
       SourceControlComponent,

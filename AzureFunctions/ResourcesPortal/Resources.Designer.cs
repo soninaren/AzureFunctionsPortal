@@ -19,7 +19,7 @@ namespace AzureFunctions.ResourcesPortal {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -1987,11 +1987,38 @@ namespace AzureFunctions.ResourcesPortal {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We are not able to get the list of installed runtime extensions.
+        /// </summary>
+        internal static string failedToGetFunctionRuntimeExtensions {
+            get {
+                return ResourceManager.GetString("failedToGetFunctionRuntimeExtensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We are not able to install runtime extension {{extensionId}}.
+        /// </summary>
+        internal static string failedToInstallFunctionRuntimeExtension {
+            get {
+                return ResourceManager.GetString("failedToInstallFunctionRuntimeExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to {{state}} function: {{functionName}}.
         /// </summary>
         internal static string failedToSwitchFunctionState {
             get {
                 return ResourceManager.GetString("failedToSwitchFunctionState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We are not able to uninstall runtime extension {{extensionId}}.
+        /// </summary>
+        internal static string failedToUnInstallFunctionRuntimeExtension {
+            get {
+                return ResourceManager.GetString("failedToUnInstallFunctionRuntimeExtension", resourceCulture);
             }
         }
         
@@ -3126,6 +3153,15 @@ namespace AzureFunctions.ResourcesPortal {
         internal static string functionKeys_addNewFunctionKey {
             get {
                 return ResourceManager.GetString("functionKeys_addNewFunctionKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to hide.
+        /// </summary>
+        internal static string functionKeys_clickToHide {
+            get {
+                return ResourceManager.GetString("functionKeys_clickToHide", resourceCulture);
             }
         }
         
@@ -5739,6 +5775,15 @@ namespace AzureFunctions.ResourcesPortal {
         internal static string test {
             get {
                 return ResourceManager.GetString("test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installing runtime extensions is taking longer than expected.
+        /// </summary>
+        internal static string timeoutInstallingFunctionRuntimeExtension {
+            get {
+                return ResourceManager.GetString("timeoutInstallingFunctionRuntimeExtension", resourceCulture);
             }
         }
         

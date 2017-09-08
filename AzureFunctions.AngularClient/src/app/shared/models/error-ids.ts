@@ -46,4 +46,8 @@ export class ErrorIds {
     public static unableToUpdateFunctionAppEditMode = '/errors/unableToUpdateFunctionAppEditMode';
     public static unableToPopulateSlotsList = '/errors/unableToPopulateSlotsList';
     public static failedToSwitchEnabledFunction = '/errors/failedToSwitchEnabledFunction';
+    public static failedToGetFunctionRuntimeExtensions = '/errors/failedToGetFunctionRuntimeExtensions';
+    public static failedToInstallFunctionRuntimeExtension = '/errors/failedToInstallFunctionRuntimeExtension';
+    public static failedToUnInstallFunctionRuntimeExtension = '/errors/failedToUnInstallFunctionRuntimeExtension';
+    public static timeoutInstallingFunctionRuntimeExtension = '/errors/timeoutInstallingFunctionRuntimeExtension';
 }
