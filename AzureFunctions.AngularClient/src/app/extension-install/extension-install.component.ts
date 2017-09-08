@@ -19,9 +19,9 @@ import { Observable } from 'rxjs/Observable';
 export class ExtensionInstallComponent {
     @Input() functionInfo: FunctionInfo;
     @Input() functionApp: FunctionApp;
+    @Input() requiredExtensions: RuntimeExtension[];
     @ViewChild(BusyStateComponent) busyState: BusyStateComponent;
     packages: RuntimeExtension[];
-    requiredExtensions: RuntimeExtension[] = [];
     private functionsNode: FunctionsNode;
     private _viewInfoStream = new Subject<TreeViewInfo<any>>();
     public functionsInfo: FunctionInfo[];
@@ -41,7 +41,30 @@ export class ExtensionInstallComponent {
             .subscribe();
     }
 
-    
+    GetRequiredExtensions(templateExtensions: RuntimeExtension[]) {
+        const extensions: RuntimeExtension[] = [];
+        return this.functionApp.getHostExtensions().map(r => {
+            // no extensions installed, all template extensions are required
+            if (!r.extensions) {
+                return templateExtensions;
+            }
+
+            templateExtensions.forEach(requiredExtension => {
+                let isInstalled = false;
+                r.extensions.forEach(installedExtension => {
+                    isInstalled = isInstalled
+                        || (requiredExtension.id === installedExtension.id
+                            && requiredExtension.version === installedExtension.version);
+                });
+
+                if (!isInstalled) {
+                    extensions.push(requiredExtension);
+                }
+            });
+
+            return extensions;
+        });
+    }
 
     set viewInfoInput(viewInfoInput: TreeViewInfo<any>) {
         this._viewInfoStream.next(viewInfoInput);

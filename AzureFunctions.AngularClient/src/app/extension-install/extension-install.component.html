@@ -1,18 +1,18 @@
-<!-- <div *ngIf="requiredExtensions && this.requiredExtensions.length > 0" role="alert" (click)="listInstalledExtensions()">            
-        <busy-state>
-            <div class="highlight" >                                
-                <span>
-                    List the extensions that needs to be installed or are used
-                </span>
-                <ul>
-                    <li *ngFor="let nugetPackage of packages">
-                        {{nugetPackage.name}}
-                    </li>
-                </ul>                        
-                <button class="custom-button" click="installExtensionPackages()">
+<div class="wrapper">
+    <busy-state></busy-state>
+    <div *ngIf="requiredExtensions && this.requiredExtensions.length > 0">
+        <div class="highlight">
+            <div class="list">
+                List the extensions that needs to be installed or are used
+            </div>
+            <ul class="list">
+                <li *ngFor="let nugetPackage of requiredExtensions">
+                    {{nugetPackage.id}}
+                </li>
+            </ul>
+            <button class="custom-button" click="installExtensionPackages()">
                     Install
                 </button>
-            </div>
-        </busy-state>
-    </div> -->
-<button>Install</button>
+        </div>
+    </div>
+</div>

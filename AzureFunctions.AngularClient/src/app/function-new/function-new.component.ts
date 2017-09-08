@@ -28,6 +28,7 @@ import { Constants } from '../shared/models/constants';
 import { CacheService } from './../shared/services/cache.service';
 import { MicrosoftGraphHelper } from '../pickers/microsoft-graph/microsoft-graph-helper';
 import { BusyStateComponent } from './../busy-state/busy-state.component';
+import { ExtensionInstallComponent } from './../extension-install/extension-install.component';
 
 @Component({
     selector: 'function-new',
@@ -38,6 +39,7 @@ import { BusyStateComponent } from './../busy-state/busy-state.component';
 })
 export class FunctionNewComponent {
     @ViewChild(BusyStateComponent) busyState: BusyStateComponent;
+    @ViewChild(ExtensionInstallComponent) extensionInstallComponent: ExtensionInstallComponent;
     private functionsNode: FunctionsNode;
 
     public functionApp: FunctionApp;
@@ -70,18 +72,6 @@ export class FunctionNewComponent {
         'readme.md',
         'metadata.json'
     ];
-
-    setBusyState() {
-        if (this.busyState) {
-            this.busyState.setBusyState();
-        }
-    }
-
-    clearBusyState() {
-        if (this.busyState) {
-            this.busyState.clearBusyState();
-        }
-    }
 
     private _viewInfoStream = new Subject<TreeViewInfo<any>>();
     public appNode: AppNode;
@@ -140,21 +130,22 @@ export class FunctionNewComponent {
                     this.showAADExpressRegistration = !!this.selectedTemplate.metadata.AADPermissions;
                 }
 
-                // // also check if it is already installed
-                // if (this.selectedTemplate.metadata.extensions && this.selectedTemplate.metadata.extensions.length > 0) {
-                //     this.setBusyState();
-                //     this.GetRequiredExtensions(this.selectedTemplate.metadata.extensions)
-                //         .subscribe(extensions => {
-                //             this.clearBusyState();
-                //             this.requiredExtensions = extensions;
-                //         });
-                // }
-
                 this.packages = this.selectedTemplate.metadata.extensions;
 
                 const experimentalCategory = this.selectedTemplate.metadata.category.find((c) => {
                     return c === 'Experimental';
                 });
+
+                if (this.selectedTemplate.metadata.extensions && this.selectedTemplate.metadata.extensions.length > 0) {
+                    this.extensionInstallComponent.setBusyState();
+                    this.extensionInstallComponent.GetRequiredExtensions(this.selectedTemplate.metadata.extensions)
+                        .subscribe(extensions => {
+                            this.extensionInstallComponent.clearBusyState();
+                            this.requiredExtensions = extensions;
+                        });
+                } else {
+                    this.requiredExtensions = [];
+                }
 
                 this.templateWarning = experimentalCategory === undefined ? '' : this._translateService.instant(PortalResources.functionNew_experimentalTemplate);
                 if (this.selectedTemplate.metadata.warning) {
@@ -288,32 +279,6 @@ export class FunctionNewComponent {
                 });
             });
     }
-
-    GetRequiredExtensions(templateExtensions: RuntimeExtension[]) {
-        const extensions: RuntimeExtension[] = [];
-        return this.functionApp.getHostExtensions().map(r => {
-            // no extensions installed, all template extensions are required
-            if (!r.extensions) {
-                return templateExtensions;
-            }
-
-            templateExtensions.forEach(requiredExtension => {
-                let isInstalled = false;
-                r.extensions.forEach(installedExtension => {
-                    isInstalled = isInstalled
-                        || (requiredExtension.id === installedExtension.id
-                            && requiredExtension.version === installedExtension.version);
-                });
-
-                if (!isInstalled) {
-                    extensions.push(requiredExtension);
-                }
-            });
-
-            return extensions;
-        });
-    }
-
 
     // poll on this for a minute. ignore 500 since the site could be restarting
     pollForExtensionStatus() {
