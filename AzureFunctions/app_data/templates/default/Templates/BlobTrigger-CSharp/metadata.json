@@ -1,0 +1,15 @@
+{
+    "name": "BlobTrigger",
+    "description": "$BlobTriggerCSharp_description",
+    "defaultFunctionName": "BlobTriggerCSharp",
+    "language": "C#",
+    "category": [
+        "$temp_category_core",
+        "$temp_category_dataProcessing"
+    ],
+    "enabledInTryMode": true,
+    "userPrompt": [
+        "connection",
+        "path"
+    ]
+}

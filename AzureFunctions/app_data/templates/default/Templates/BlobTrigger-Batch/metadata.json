@@ -1,0 +1,12 @@
+{
+    "name": "BlobTrigger",
+    "description": "$BlobTriggerBatch_description",
+    "defaultFunctionName": "BlobTriggerBatch",
+    "language": "Batch",
+    "category": [ "$temp_category_experimental" ],
+    "enabledInTryMode": true,
+    "userPrompt": [
+        "connection",
+        "path"
+    ]
+}

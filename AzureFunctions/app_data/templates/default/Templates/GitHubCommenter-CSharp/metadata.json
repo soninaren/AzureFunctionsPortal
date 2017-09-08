@@ -1,0 +1,10 @@
+{
+    "defaultFunctionName": "GitHubCommenterCSharp",
+    "description": "$CSharp_description",
+    "name": "GitHub Commenter",
+    "language": "C#",
+    "enabledInTryMode": true,
+    "category": [
+        "$temp_category_samples"
+    ]
+}

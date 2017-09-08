@@ -1,0 +1,15 @@
+{
+    "defaultFunctionName": "QueueTriggerFSharp",
+    "description": "$QueueTriggerFSharp_description",
+    "name": "QueueTrigger",
+    "language": "F#",
+    "category": [
+        "$temp_category_core",
+        "$temp_category_dataProcessing"
+    ],
+    "enabledInTryMode": true,
+    "userPrompt": [
+        "connection",
+        "queueName"
+    ]
+}

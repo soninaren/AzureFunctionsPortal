@@ -1,0 +1,5 @@
+{
+    "ContainerName": "sample-container",
+    "BlobName": "sample-blob",
+    "Permission": "Read,Write,Create"
+}

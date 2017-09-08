@@ -1,0 +1,9 @@
+{
+    "defaultFunctionName": "ManualTriggerCSharp",
+    "description": "$ManualTriggerCSharp_description",
+    "name": "ManualTrigger",
+    "trigger": "ManualTrigger",
+    "language": "C#",
+    "enabledInTryMode": true,
+    "category": [ "$temp_category_core" ]
+}
