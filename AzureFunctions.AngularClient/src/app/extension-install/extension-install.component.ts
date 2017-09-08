@@ -60,6 +60,7 @@ export class ExtensionInstallComponent {
 
     pollInstallationStatus() {
         setTimeout(() => {
+            this.setBusyState();
             if (this.jobLocations.length > 0) {
                 const status: Observable<any>[] = [];
                 this.jobLocations.forEach(job => {
@@ -73,10 +74,10 @@ export class ExtensionInstallComponent {
                         }
                     });
                     this.jobLocations = job;
-                    if (this.jobLocations.length > 0) {
-                        this.pollInstallationStatus();
-                    }
+                    this.pollInstallationStatus();
                 });
+            } else {
+                this.clearBusyState();
             }
         }, 500);
     }
