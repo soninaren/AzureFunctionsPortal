@@ -125,7 +125,6 @@ export class FunctionNewComponent {
         this.functionApp.getTemplates().subscribe((templates) => {
             setTimeout(() => {
                 this.selectedTemplate = templates.find((t) => t.id === templateName);
-                this.installationSucceeded = false;
                 if (this.selectedTemplate && this.selectedTemplate.metadata) {
                     this.showAADExpressRegistration = !!this.selectedTemplate.metadata.AADPermissions;
                 }

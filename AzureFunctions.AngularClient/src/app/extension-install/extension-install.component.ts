@@ -22,6 +22,7 @@ export class ExtensionInstallComponent {
     @Input() requiredExtensions: RuntimeExtension[];
     @ViewChild(BusyStateComponent) busyState: BusyStateComponent;
     packages: RuntimeExtension[];
+    installationSucceeded: boolean = false;
     private functionsNode: FunctionsNode;
     private _viewInfoStream = new Subject<TreeViewInfo<any>>();
     public functionsInfo: FunctionInfo[];
@@ -54,22 +55,23 @@ export class ExtensionInstallComponent {
             Observable.zip(...extensionCalls).subscribe((r) => {
                 this.jobLocations = r;
                 this.clearBusyState();
+                this.pollInstallationStatus();
             });
         }
     }
 
     pollInstallationStatus() {
         setTimeout(() => {
-            this.setBusyState();
             if (this.jobLocations.length > 0) {
+                this.setBusyState();
                 const status: Observable<any>[] = [];
                 this.jobLocations.forEach(job => {
                     status.push(this.functionApp.getExtensionInstallStatus(job.id));
                 });
                 Observable.zip(...status).subscribe(r => {
-                    let job: any[] = [];
+                    const job: any[] = [];
                     r.forEach(jobStatus => {
-                        if (jobStatus.status !== 'succeeded') {
+                        if (jobStatus.status !== 'Succeeded') {
                             job.push(jobStatus);
                         }
                     });
@@ -78,8 +80,21 @@ export class ExtensionInstallComponent {
                 });
             } else {
                 this.clearBusyState();
+                this.GetRequiredExtensions(this.requiredExtensions).subscribe((r) => {
+                    this.requiredExtensions = r;
+                    if (r.length === 0) {
+                        this.showInstallSucceededBanner();
+                    }
+                });
             }
         }, 500);
+    }
+
+    showInstallSucceededBanner() {
+        this.installationSucceeded = true;
+        setTimeout(() => {
+            this.installationSucceeded = false;
+        }, 5000);
     }
 
     GetRequiredExtensions(templateExtensions: RuntimeExtension[]) {
