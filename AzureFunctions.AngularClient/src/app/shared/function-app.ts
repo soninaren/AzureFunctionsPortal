@@ -1806,6 +1806,8 @@ export class FunctionApp {
             });
     }
 
+    // Try and the list of runtime extensions install.
+    // If there was an error getting the list, show an error. return an empty list.
     getHostExtensions(): Observable<any> {
         const masterKey = this.masterKey
             ? Observable.of(null)
@@ -1830,6 +1832,8 @@ export class FunctionApp {
                             });
                         }
                     });
+            }).catch(() => {
+                return Observable.of([]);
             });
     }
 
@@ -1857,6 +1861,8 @@ export class FunctionApp {
                             });
                         }
                     });
+            }).catch(_ => {
+                return Observable.of({});
             });
     }
 
