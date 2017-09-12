@@ -66,8 +66,17 @@ export class ExtensionInstallComponent {
                 this.setBusyState();
                 const status: Observable<any>[] = [];
                 this.jobLocations.forEach(job => {
-                    status.push(this.functionApp.getExtensionInstallStatus(job.id));
+                    if (job && job.id) {
+                        status.push(this.functionApp.getExtensionInstallStatus(job.id));
+                    }
                 });
+
+                // All extension installations resulted in error.
+                if (status.length === 0)                
+                {
+                    this.clearBusyState();    
+                    return;
+                }
                 Observable.zip(...status).subscribe(r => {
                     const job: any[] = [];
                     r.forEach(jobStatus => {
@@ -78,9 +87,10 @@ export class ExtensionInstallComponent {
                     this.jobLocations = job;
                     this.pollInstallationStatus();
                 });
-            } else {
-                this.clearBusyState();
+            } else {                
+                // if any one the extension installation failed then success banner will not be shown
                 this.GetRequiredExtensions(this.requiredExtensions).subscribe((r) => {
+                    this.clearBusyState();
                     this.requiredExtensions = r;
                     if (r.length === 0) {
                         this.showInstallSucceededBanner();

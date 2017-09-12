@@ -1837,6 +1837,7 @@ export class FunctionApp {
             });
     }
 
+    // Todo: Capture 409
     installExtension(extension: RuntimeExtension): Observable<any> {
         const masterKey = this.masterKey
             ? Observable.of(null)
@@ -1850,7 +1851,7 @@ export class FunctionApp {
                     (error: FunctionsResponse) => {
                         if (!error.isHandled) {
                             this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
-                                message: this._translateService.instant(PortalResources.failedToInstallFunctionRuntimeExtension),
+                                message: this._translateService.instant(PortalResources.failedToInstallFunctionRuntimeExtension, { error: extension.id }),
                                 errorId: ErrorIds.failedToInstallFunctionRuntimeExtension,
                                 errorType: ErrorType.RuntimeError,
                                 resourceId: this.site.id
