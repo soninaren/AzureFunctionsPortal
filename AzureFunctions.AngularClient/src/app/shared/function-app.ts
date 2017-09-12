@@ -1819,7 +1819,7 @@ export class FunctionApp {
                     .map(r => <FunctionKeys>r.json())
                     .do(__ => this._broadcastService.broadcast<string>(BroadcastEvent.ClearError, ErrorIds.failedToGetFunctionRuntimeExtensions),
                     (error: FunctionsResponse) => {
-                        if (!error.isHandled) {
+                        if (!error.isHandled && error.status !== 503) {
                             this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
                                 message: this._translateService.instant(PortalResources.failedToGetFunctionRuntimeExtensions),
                                 errorId: ErrorIds.failedToGetFunctionRuntimeExtensions,

@@ -72,9 +72,8 @@ export class ExtensionInstallComponent {
                 });
 
                 // All extension installations resulted in error.
-                if (status.length === 0)                
-                {
-                    this.clearBusyState();    
+                if (status.length === 0) {
+                    this.clearBusyState();
                     return;
                 }
                 Observable.zip(...status).subscribe(r => {
@@ -87,7 +86,7 @@ export class ExtensionInstallComponent {
                     this.jobLocations = job;
                     this.pollInstallationStatus();
                 });
-            } else {                
+            } else {
                 // if any one the extension installation failed then success banner will not be shown
                 this.GetRequiredExtensions(this.requiredExtensions).subscribe((r) => {
                     this.clearBusyState();
@@ -97,7 +96,7 @@ export class ExtensionInstallComponent {
                     }
                 });
             }
-        }, 500);
+        }, 1000);
     }
 
     showInstallSucceededBanner() {
