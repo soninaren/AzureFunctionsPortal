@@ -701,5 +701,6 @@ export class PortalResources
     public static failedToInstallFunctionRuntimeExtension: string = "failedToInstallFunctionRuntimeExtension";
     public static failedToUnInstallFunctionRuntimeExtension: string = "failedToUnInstallFunctionRuntimeExtension";
     public static timeoutInstallingFunctionRuntimeExtension: string = "timeoutInstallingFunctionRuntimeExtension";
+    public static extensionAlreadyInstalledWithDifferentVersion: string = "extensionAlreadyInstalledWithDifferentVersion";
 }
 

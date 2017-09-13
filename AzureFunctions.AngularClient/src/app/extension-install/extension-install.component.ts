@@ -22,11 +22,11 @@ export class ExtensionInstallComponent {
     @Input() requiredExtensions: RuntimeExtension[];
     @ViewChild(BusyStateComponent) busyState: BusyStateComponent;
     packages: RuntimeExtension[];
-    installationSucceeded: boolean = false;
+    installationSucceeded = false;
     private functionsNode: FunctionsNode;
     private _viewInfoStream = new Subject<TreeViewInfo<any>>();
     public functionsInfo: FunctionInfo[];
-    public jobLocations: any[] = [];
+    public installJobs: any[] = [];
 
     constructor(private _aiService: AiService) {
         this._viewInfoStream
@@ -53,38 +53,60 @@ export class ExtensionInstallComponent {
 
             // Check install status
             Observable.zip(...extensionCalls).subscribe((r) => {
-                this.jobLocations = r;
+                this.installJobs = r;
                 this.clearBusyState();
-                this.pollInstallationStatus();
+                this.pollInstallationStatus(0);
             });
         }
     }
 
-    pollInstallationStatus() {
+    // if post request for install resulted in error, error is added to jobstatus
+    // if polling has started, it will wait until timeout and will ignore error
+    // as error could be temporary because of host restart.
+    pollInstallationStatus(timeOut: number) {
         setTimeout(() => {
-            if (this.jobLocations.length > 0) {
+            if (timeOut > 60) {
+                this.GetRequiredExtensions(this.requiredExtensions).subscribe((r) => {
+                    this.requiredExtensions = r;
+                    this.functionApp.showTimeoutError();
+                    this.clearBusyState();
+                });
+                return;
+            }
+
+            if (this.installJobs.length > 0) {
                 this.setBusyState();
                 const status: Observable<any>[] = [];
-                this.jobLocations.forEach(job => {
+                this.installJobs.forEach(job => {
+                    // if resulted in error not added to status
                     if (job && job.id) {
                         status.push(this.functionApp.getExtensionInstallStatus(job.id));
                     }
                 });
 
-                // All extension installations resulted in error.
+                // No installation to keep track of 
+                // All extension installations resulted in error like 500
                 if (status.length === 0) {
                     this.clearBusyState();
                     return;
                 }
+
                 Observable.zip(...status).subscribe(r => {
                     const job: any[] = [];
                     r.forEach(jobStatus => {
-                        if (jobStatus.status !== 'Succeeded') {
+                        // if failed then show error, remove from status tracking queue
+                        if (jobStatus.status === 'Failed') {
+                            this.functionApp.showInstallFailed();
+                        }
+
+                        // error status also show up here, error is different from failed
+                        if (jobStatus.status !== 'Succeeded' && jobStatus.status !== 'Failed') {
                             job.push(jobStatus);
                         }
+
                     });
-                    this.jobLocations = job;
-                    this.pollInstallationStatus();
+                    this.installJobs = job;
+                    this.pollInstallationStatus(timeOut + 1);
                 });
             } else {
                 // if any one the extension installation failed then success banner will not be shown
@@ -98,6 +120,8 @@ export class ExtensionInstallComponent {
             }
         }, 1000);
     }
+
+
 
     showInstallSucceededBanner() {
         this.installationSucceeded = true;
@@ -118,7 +142,8 @@ export class ExtensionInstallComponent {
                 let isInstalled = false;
                 r.extensions.forEach(installedExtension => {
                     isInstalled = isInstalled
-                        || (requiredExtension.id === installedExtension.id
+                        || (installedExtension.id
+                            && requiredExtension.id === installedExtension.id
                             && requiredExtension.version === installedExtension.version);
                 });
 

@@ -1819,25 +1819,53 @@ export class FunctionApp {
                     .map(r => <FunctionKeys>r.json())
                     .do(__ => this._broadcastService.broadcast<string>(BroadcastEvent.ClearError, ErrorIds.failedToGetFunctionRuntimeExtensions),
                     (error: FunctionsResponse) => {
-                        if (!error.isHandled && error.status !== 503) {
-                            this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
-                                message: this._translateService.instant(PortalResources.failedToGetFunctionRuntimeExtensions),
-                                errorId: ErrorIds.failedToGetFunctionRuntimeExtensions,
-                                errorType: ErrorType.RuntimeError,
-                                resourceId: this.site.id
-                            });
+                        if (!error.isHandled) {
                             this.trackEvent(ErrorIds.failedToGetFunctionRuntimeExtensions, {
                                 status: error.status.toString(),
                                 content: error.text(),
                             });
+                            if (error.status !== 503) {
+                                this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
+                                    message: this._translateService.instant(PortalResources.failedToGetFunctionRuntimeExtensions),
+                                    errorId: ErrorIds.failedToGetFunctionRuntimeExtensions,
+                                    errorType: ErrorType.RuntimeError,
+                                    resourceId: this.site.id
+                                });
+                            }
                         }
                     });
-            }).catch(() => {
-                return Observable.of([]);
+            }).catch(e => {
+                return Observable.of(e);
             });
     }
 
+    showTimeoutError() {
+        this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
+            message: this._translateService.instant(PortalResources.timeoutInstallingFunctionRuntimeExtension),
+            errorId: ErrorIds.timeoutInstallingFunctionRuntimeExtension,
+            errorType: ErrorType.RuntimeError,
+            resourceId: this.site.id
+        });
+        this.trackEvent(ErrorIds.timeoutInstallingFunctionRuntimeExtension, {
+            content: this._translateService.instant(PortalResources.timeoutInstallingFunctionRuntimeExtension)
+        });
+    }
+
+    showInstallFailed() {
+        this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
+            message: this._translateService.instant(PortalResources.failedToInstallFunctionRuntimeExtension, { extensionId: '' }),
+            errorId: ErrorIds.timeoutInstallingFunctionRuntimeExtension,
+            errorType: ErrorType.RuntimeError,
+            resourceId: this.site.id
+        });
+        this.trackEvent(ErrorIds.timeoutInstallingFunctionRuntimeExtension, {
+            content: this._translateService.instant(PortalResources.failedToInstallFunctionRuntimeExtension)
+        });
+    }
+
     // Todo: Capture 409
+    // returns error object when resulted in error
+    // error.id is not defined
     installExtension(extension: RuntimeExtension): Observable<any> {
         const masterKey = this.masterKey
             ? Observable.of(null)
@@ -1850,20 +1878,30 @@ export class FunctionApp {
                     .do(__ => this._broadcastService.broadcast<string>(BroadcastEvent.ClearError, ErrorIds.failedToInstallFunctionRuntimeExtension),
                     (error: FunctionsResponse) => {
                         if (!error.isHandled) {
-                            this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
-                                message: this._translateService.instant(PortalResources.failedToInstallFunctionRuntimeExtension, { error: extension.id }),
-                                errorId: ErrorIds.failedToInstallFunctionRuntimeExtension,
-                                errorType: ErrorType.RuntimeError,
-                                resourceId: this.site.id
-                            });
+                            if (error.status === 409) {
+                                this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
+                                    message: this._translateService.instant(PortalResources.extensionAlreadyInstalledWithDifferentVersion, { extensionId: extension.id }),
+                                    errorId: ErrorIds.extensionAlreadyInstalledWithDifferentVersion,
+                                    errorType: ErrorType.RuntimeError,
+                                    resourceId: this.site.id
+                                });
+                            } else {
+                                this._broadcastService.broadcast<ErrorEvent>(BroadcastEvent.Error, {
+                                    message: this._translateService.instant(PortalResources.failedToInstallFunctionRuntimeExtension, { extensionId: extension.id }),
+                                    errorId: ErrorIds.failedToInstallFunctionRuntimeExtension,
+                                    errorType: ErrorType.RuntimeError,
+                                    resourceId: this.site.id
+                                });
+                            }
+
                             this.trackEvent(ErrorIds.failedToInstallFunctionRuntimeExtension, {
                                 status: error.status.toString(),
                                 content: error.text(),
                             });
                         }
                     });
-            }).catch(_ => {
-                return Observable.of({});
+            }).catch(e => {
+                return Observable.of(e);
             });
     }
 
@@ -1884,6 +1922,11 @@ export class FunctionApp {
                                 content: error.text(),
                             });
                         }
+                    });
+            }).catch(_ => {
+                return Observable.of(
+                    {
+                        id: jobId
                     });
             });
     }

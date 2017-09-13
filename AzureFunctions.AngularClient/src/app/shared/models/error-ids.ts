@@ -51,4 +51,5 @@ export class ErrorIds {
     public static failedToGetExtensionInstallStatus = '/errors/failedToGetExtensionInstallStatus';
     public static failedToUnInstallFunctionRuntimeExtension = '/errors/failedToUnInstallFunctionRuntimeExtension';
     public static timeoutInstallingFunctionRuntimeExtension = '/errors/timeoutInstallingFunctionRuntimeExtension';
+    public static extensionAlreadyInstalledWithDifferentVersion = '/errors/extensionAlreadyInstalledWithDifferentVersion';
 }

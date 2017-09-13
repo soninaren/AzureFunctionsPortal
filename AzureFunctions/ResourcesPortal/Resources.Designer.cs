@@ -1987,6 +1987,15 @@ namespace AzureFunctions.ResourcesPortal {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The extension {{extensionId}} with a different version is already installed.
+        /// </summary>
+        internal static string extensionAlreadyInstalledWithDifferentVersion {
+            get {
+                return ResourceManager.GetString("extensionAlreadyInstalledWithDifferentVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to We are not able to get the list of installed runtime extensions.
         /// </summary>
         internal static string failedToGetFunctionRuntimeExtensions {

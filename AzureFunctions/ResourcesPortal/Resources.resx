@@ -2218,4 +2218,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="timeoutInstallingFunctionRuntimeExtension" xml:space="preserve">
     <value>Installing runtime extensions is taking longer than expected</value>
   </data>
+  <data name="extensionAlreadyInstalledWithDifferentVersion" xml:space="preserve">
+    <value>The extension {{extensionId}} with a different version is already installed</value>
+  </data>
 </root>
